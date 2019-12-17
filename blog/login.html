@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 使用link元素导入样式文件 -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 导入jq框架用于代码的开发（压缩版） -->
+    <script src="js/jquery.min.js"></script>
+    <!-- 导入页面业务逻辑代码 必须首先导入jq框架-->
+    <script src="js/blog.js"></script>
+</head>
+<body>
+    <!-- 根据UI效果添加页面元素 -->
+    <div id="login">
+        <!-- 背景图片元素 -->
+        <img src="imgs/b.jpg" alt="">
+    </div>
+    <!--  使用 -->
+    <form action="" onsubmit="return checkvalue();">
+        <!-- 新建一个外围最大的div元素 -->
+        <div id="log">
+            <!-- 将所有的元素和数据添加到div中 -->
+            <div class="title">
+                <h3>Login!</h3>
+            </div>
+            <div class="tip">
+                Login
+            </div>
+            <div class="item">
+                <input type="text" name="username" id="username" placeholder="UserName">
+            </div>
+            <div class="error" id="err1">用户名不能这空！</div>
+            <div class="item">
+                <input type="text" name="password" id="password" placeholder="PassWord">
+            </div>
+            <div class="error" id="err2">密码不能为空！</div>
+            <div class="btn">
+                <input type="submit" value="Login">
+            </div>
+        </div>
+    </form>
+</body>
+</html>
