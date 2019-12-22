@@ -1,0 +1,77 @@
+1.模板的语法：
+  1.变量
+    在视图中：
+      return render_template('xxx.html',变量1=值1,变量2=值2)
+      return render_template('xxx.html',params=locals())
+
+      允许传递到模板中变量的数据类型：
+        数字，字符串，字典，列表，元组，对象
+    在模板中：
+      {{变量}}
+      {{uname}}
+      {{list[1]}}  或  {{list.1}}
+      {{person.show()}}
+  2.过滤器
+    在变量输出之前改变变量的值
+    {{变量|过滤器}}
+    过滤器：
+      lower
+      upper
+      capitalize
+      trip
+  3.控制结构
+    1.if 结构
+      {% if 条件 %}
+        满足条件要执行的代码块(html/变量/过滤器)
+      {% endif %}
+
+      {% if 条件 %}
+      {% else %}
+      {% endif %}
+    2.for 结构
+      {% for 变量 in 列表,元组,字典 %}
+      {% endfor %}
+    3.宏
+      声明：
+      {% macro 函数名() %}
+        函数体(html/结构/变量/过滤器)
+      {% endmacro %}
+      调用：
+        {{ 函数名() }}
+      允许将宏声明在独立的网页中：
+        1.创建网页 - macro.html
+          {% macro 函数名() %}
+            函数体(html/结构/变量/过滤器)
+          {% endmacro %}
+        2.在网页中导入macro.html
+          {% import 'macro.html' as macros %}
+          {{ macros.函数名() }}
+    4.模板的包含
+      {% include 'xxx.html' %}
+  4.静态文件
+    1.在项目目录中创建 static 目录用于保存静态文件
+    2.在模板中使用静态文件
+      /static/...
+
+      <img src="/static/img/xxx.jpg">
+      <img src="{{url_for('static',filename='img/a.jpg')}}">
+  5.继承
+    1.父模板中
+      {% block 块名 %}
+      {% endblock %}
+      block作用：定义在子模板中允许被修改的内容部分
+        1.在父模板中食被正常显示的
+        2.在子模板中可以被重写
+    2.子模板中
+      1.使用 {% extends '父模板名称' %} 实现继承
+      2.使用 {% block 块名 %} .. {% endblock %}
+        覆盖父模板中的同名内容
+      3.使用{{super()}} 调用父模板中的内容
+
+
+
+
+
+
+
+

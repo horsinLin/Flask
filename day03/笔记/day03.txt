@@ -1,0 +1,93 @@
+1.修改配置
+  app = Flask(__name__,template_folder='muban',static_url_path='/s/'.static_folder='s')
+  1.template_folder
+    设置模板的保存路径
+  2.static_url_path
+    设置静态文件的访问路径(映射到Web中的访问路径)
+  3.static_folder
+    设置静态文件的保存目录(映射到项目中的目录名称)
+2.请求(request) 和 响应(response)
+  1.HTTP协议
+  2.请求对象 - request
+    request - 请求对象，封装了所有与请求相关的信息，如：请求消息头，请求数据，请求路径，...
+    在 Flask 中，请求信息被封装到 request 对象中，
+      from flask import request
+    1.request的成员(常用)
+      1.scheme：获取请求方案(协议)
+      2.method：获取本次请求的请求方式
+      3.request.args：获取使用get请求方式提交的数据
+      4.request.form：获取使用post请求方式提交的数据
+      5.request.values：获取get和post请求方式提交的数据(get和post通用)
+      6.request.cookies：获取cookies中的信息
+      7.request.headers：获取请求消息头的信息
+      8.request.path：获取请求url地址
+      9.request.files：获取用户上传的文件
+      10.request.full_path：获取请求的完整路径
+      11.request.url：获取访问地址
+    2.获取请求提交的数据
+      1.get 请求方式
+        get请求的数据是放在 QueryString 中的
+        request.args 封装的就是 get 请求的数据，类型为字典
+          request.args['name']：获取 name 对应的值
+          request.args.get('name')：同上
+          request.args.getlist('name_list')：获取 name_list 列表数据
+      2.post 请求方式
+        post请求的数据是放在 form 中的
+          request.form 封装的就是 post 请求的数据，类型为 字典
+            request.form['name']：获取 name 对应的值
+            request.form.get('name')：同上
+            request.form.getlist('name_list')：获取 name_list 列表数据
+        练习：
+          1.访问地址  localhost:5000/post，能够去往 04-form.html
+            包含一个表单，post请求方式，提交地址，自定义
+              1.文本框，用户名
+              2.密码框，用户密码
+              3.邮件框，用户邮箱
+              4.文本框，真实姓名
+              5.提交按钮
+          2.提交时，提交到post_do
+          3.post_do
+            获取所有请求提交的数据，并打印在终端上
+  3.响应对象
+    响应对象其实就是要响应给客户端的内容，可以是普通字符串，可以是模板 或者 是重定向
+    @app.route('/')
+    def index():
+        # return "hello world"
+        return render_template('xxx.html')
+        以上两种行为，本质上响应回去的都是字符串
+    1.构建响应对象，再响应给客户端
+      注意：不是直接响应字符串，而是响应对象，响应对象可以包含响应字符串，同时也可以实现其他的响应操作
+      在 flask 中，使用 make_response() 构建响应对象
+        from flask import make_response
+        ...
+        resp = make_response('响应内容')
+        # 实现其他的响应操作，如：添加 cookies, ...
+        return resp
+    2.重定向
+      1.什么是重定向
+        由服务器端通知客户端重新向新的地址发送请求
+      2.语法
+        from flask import redirect
+        ... ...
+        resp = redirect('重定向地址')
+        return resp
+  4.文件上传
+    1.注意问题
+      表单中
+        提交方式必须为 post
+        enctype 属性必须设置为 multipart/form-data
+    2.服务器端
+      1.通过 request.files 获取上传的文件
+        f = request.files['文件框 name 属性值']
+      2.通过 f.save(保存路径)  将文件班车到指定目录处
+        通过 f.filename 获取文件的名称
+        filename = f.filename
+        f.save('static/'+filename)
+  任务：
+    将上传的文件名称更改为 当前的时间(年月日时分秒微秒).扩展名 再保存到服务器上
+
+
+
+
+
+
