@@ -1,0 +1,94 @@
+1.模型
+  使用 SQLAlchemy 的 ORM 框架，并且需要 Flask-SQLAlchemy
+  配置
+    from flask_sqlalchemy import SQLAlchemy
+
+    app.config['SQLALCHEMY_DATABASE_URI']="mysql://username:password@host:port/dbname"
+    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN']=True
+
+    db = SQLAlchemy(app)
+
+  1.定义模型
+        class MODELNAME(db.Model)
+            __tablename__ = "TABLENAME"
+            COLUMN_NAME = db.Column(db.TYPE,OPTIONS)
+            ... ...
+==================================================================
+1.FLASK-SQLALCHEMY - 查询
+  1.基于db.session 进行查询
+    1.db.session.query()
+      该函数会返回一个 Query 对象,类型为 BaseQuery, 包含了指定实体类对应的表中所有的数据
+      该函数也可以接受多个参数,参数表示的是要查询哪个实体
+    2.查询执行函数
+      目的:在查询的基础上得到最终想要的结果
+      语法:db.session.query(...).查询执行函数()
+        函数              说明
+        all()           以列表的方式返回查询的所有结果
+        first()         返回查询中的第一个结果,没有结果则返回None
+        first_or_404()  返回查询中的第一个结果,如果没有结果,则终止并返回404
+        count()         返回查询结果的数量
+    3.查询过滤器函数
+      作用:在查询的基础上,筛选部分列出来
+      语法:db.session.query(...).过滤器函数().查询执行函数()
+      过滤器函数:
+        函数                说明
+        filter()          按指定条件进行过滤(多表,单表,定植,不定值..)
+        filter_by()       按等值条件进行过滤
+        limit()           按限制行数获取
+        order_by()        根据指定条件进行排序
+        group_by()        根据指定条件进行分组
+        详解:
+          1.filter()
+            1.查询年龄 大于 30 的 Users 的信息
+              db.session.query(Users).filter(Users.age>30).all()
+              注意:条件必须由 模型类.属性 来组成
+            2.查询年龄 大于 30 且 id 大于 5 的 Users 的信息
+              db.session.query(Users).filter(Users.age > 30, User.id > 5).all()
+            3.查询年龄 大于 30 或者 id 大于 5 的 Users 的信息
+              注意:查询 或 的操作,要借助 or_()
+                db.session.query(Users).filter(or_(条件1,条件2)).all()
+            4.查询 id 等于 5 的 Users 的信息
+              db.session.query(Users).filter(Users.id == 5).first()
+            5.查询 email 中包含 w 的 users 的信息 - 模糊查询 like
+              db.session.query(Users).filter(Users.email.like('%z%')).all()
+            6.查询 id 在 [1,2,3] 之间的 users 的信息
+              users = db.session.query(Users).filter(Users.id.in_([1, 2, 3])).all()
+          2.filter_by()
+            1.查询 id = 5 的 users 的信息
+              db.session.query(Users).filter_by(id=5).first()
+          3.limit()
+            1.在整个查询结果中获取前5条数据
+              db.session.query(Users).limit(5).all()
+          4.order_by()
+            1.对 Users 表中所有的数据按 id 倒序排序
+              db.session.query(Users).order_by('id desc').all()
+          5.group_by()
+            db.session.query(Users).group_by('age').all()
+  2.基于 Models 进行查询
+    Models.query.查询过滤器(条件参数).查询执行函数()
+2.FLASK-SQLALCHEMY - 删除 和 修改
+  1.删除
+    1.查询出要删除的实体
+      user = db.session.query(Users).filter_by(id=5).first()
+    2.根据所提供的删除方法将信息删除
+      db.session.delete(user)
+  2.修改
+    将 id 为 1 的用户的 username 改为 Wang WC, 年龄改为 40
+    1.查
+      user = Users.query.filter_by(id = 1).first()
+    2.改
+      user.username = "Wang WC"
+      user.age = 40
+    3.保存
+      db.session.add(user)
+3.FLASK-SQLALCHEMY - 关系映射
+  1.一对多
+    语法实现
+      1.在"多"实体中增加
+        外键列名=db.Column(db.Integer,db.ForeignKey('主表.主键'))
+      2.在"一"实体中增加反向引用关系
+        属性名=db.relationship('多的实体类名',backref='属性名',lazy='dynamic')
+
+
+
+
